@@ -32,9 +32,9 @@ git clone https://github.com/momorara/ePaperPi <br>
 2024/7/ Pi5 BookWormでは動作しません。<br>
 
 <h4><<ライセンス>></h4>
+GNU General Public License v3.0 <br>
 使用しているライブラリについては、ライブラリ制作者のライセンス規定を参照ください。 <br>
-オリジナル部分については、オープソースとさせていただきます。 <br>
-Released under the MIT license です。 <br>
+オリジナル部分についても同様とします。 <br>
 プログラム自体はサンプルプログラムです。 <br>
 
 <h4><<サポート情報>>></h4>
