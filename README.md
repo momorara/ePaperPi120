@@ -28,8 +28,8 @@ git clone https://github.com/momorara/ePaperPi <br>
 お問い合わせに関しては、サポート.txtを参照ください。<br>
 
 <h4><<動作環境>>></h4>
-2024/7/ 対応OS：Bullseye版(11.9)での動作を確認しました。<br>
-2024/7/ Pi5 BookWormでは動作しません。<br>
+2024/7/27 対応OS：Bullseye版(11.10)での動作を確認しました。<br>
+2024/7/ Pi5 BookWormでは動作しますがインストール方法が違い、仮想環境にて動作させて下さい。。<br>
 
 <h4><<ライセンス>></h4>
 GNU General Public License v3.0 <br>
