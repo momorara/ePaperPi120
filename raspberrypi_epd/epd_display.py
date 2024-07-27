@@ -1,13 +1,20 @@
+"""
+2.9インチ用に改造
+Bookwormで使用できるようにdigitalioを使用
+"""
+
 import numpy as np
 import raspberrypi_epd.commands as cmd
 import logging
 import time
 import spidev
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from enum import Enum
 from raspberrypi_epd.buffer import DisplayBuffer
 from bdfparser import Font
 
+import digitalio
+import board
 
 class Color(Enum):
     BLACK = 0
@@ -19,6 +26,23 @@ BLACK = np.uint8(0x00)
 WHITE = np.uint8(0xFF)
 RED = np.uint8(0xFF)
 
+# GPIO.setup(self._RESET, GPIO.OUT)
+# GPIO.output(self._RESET, GPIO.HIGH)
+reset_pin = digitalio.DigitalInOut(board.D17)  # reset 
+reset_pin.direction = digitalio.Direction.OUTPUT
+reset_pin.value = True  # Turn on the reset
+
+# GPIO.setup(self._DC, GPIO.OUT)
+DC_pin = digitalio.DigitalInOut(board.D27)  # DC
+DC_pin.direction = digitalio.Direction.OUTPUT
+
+# GPIO.setup(self._CS, GPIO.OUT)
+CS_pin = digitalio.DigitalInOut(board.D2)  # CS
+CS_pin.direction = digitalio.Direction.OUTPUT
+
+# GPIO.setup(self.BUSY, GPIO.IN)
+busy_pin = digitalio.DigitalInOut(board.D4)  # busy
+busy_pin.direction = digitalio.Direction.INPUT
 
 class WeAct213:
     """
@@ -52,6 +76,8 @@ class WeAct213:
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00], dtype=np.uint8)
 
+
+
     def __init__(self, dc: int, cs: int, busy: int, reset: int):
         """
         Class constructor. Pin Numbering should be set outside this class (see GPIO.setmode)
@@ -60,16 +86,18 @@ class WeAct213:
         :param busy: BUSY pin number
         :param reset: RESET pin number
         """
+        # busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
         self._DC = dc
         self._CS = cs
         self._RESET = reset
         self._BUSY = busy
-        GPIO.setup(self._DC, GPIO.OUT)
-        GPIO.setup(self._CS, GPIO.OUT)
-        GPIO.setup(self._RESET, GPIO.OUT)
-        GPIO.output(self._RESET, GPIO.HIGH)
-        self.BUSY = busy
-        GPIO.setup(self.BUSY, GPIO.IN)
+        # GPIO.setup(self._DC, GPIO.OUT)
+        # GPIO.setup(self._CS, GPIO.OUT)
+
+        # GPIO.setup(self._RESET, GPIO.OUT)
+        # GPIO.output(self._RESET, GPIO.HIGH)
+
+        # GPIO.setup(self.BUSY, GPIO.IN)
         self._spi = spidev.SpiDev()
         self._spi.open(bus=0, device=0)
         self._spi.max_speed_hz = 500000  # 500KHz
@@ -142,9 +170,11 @@ class WeAct213:
         """
         logging.debug("Reseting the display")
         # Do a HW Reset
-        GPIO.output(self._RESET, GPIO.LOW)
+        # GPIO.output(self._RESET, GPIO.LOW)
+        reset_pin.value = False
         time.sleep(0.01)
-        GPIO.output(self._RESET, GPIO.HIGH)
+        # GPIO.output(self._RESET, GPIO.HIGH)
+        reset_pin.value = True
         # SW Reset (command 0x12)
         self._write_command(cmd.SW_RESET)
         self._wait_while_busy()
@@ -160,7 +190,7 @@ class WeAct213:
         :return:
         """
         self._spi.close()
-        GPIO.cleanup()
+        # GPIO.cleanup()
 
     def _wait_while_busy(self):
         """
@@ -169,8 +199,8 @@ class WeAct213:
         """
         counter = 0
         while True:
-            busy = GPIO.input(self.BUSY)
-            if busy == 0:
+            busy = busy_pin.value
+            if busy == False:
                 break
             time.sleep(0.005)
             counter = counter + 1
@@ -246,11 +276,16 @@ class WeAct213:
         :return: None
         """
         logging.debug(f"Sending command: 0x{command.tobytes().hex()}")
-        GPIO.output(self._DC, GPIO.LOW)
-        GPIO.output(self._CS, GPIO.LOW)
+        # GPIO.output(self._DC, GPIO.LOW)
+        DC_pin.value = False
+        # GPIO.output(self._CS, GPIO.LOW)
+        CS_pin.value = False
         self._spi.xfer2(command.tobytes())
-        GPIO.output(self._CS, GPIO.HIGH)
-        GPIO.output(self._DC, GPIO.HIGH)
+        # GPIO.output(self._CS, GPIO.HIGH)
+        CS_pin.value = True
+        # GPIO.output(self._DC, GPIO.HIGH)
+        DC_pin.value = True
+
 
     def _write_data_byte(self, data: np.uint8):
         """
@@ -259,9 +294,11 @@ class WeAct213:
         :return: None
         """
         # logging.debug(f'Sending data byte: 0x{data.tobytes().hex()}')
-        GPIO.output(self._CS, GPIO.LOW)
+        # GPIO.output(self._CS, GPIO.LOW)
+        CS_pin.value = False
         self._spi.xfer2(data.tobytes())
-        GPIO.output(self._CS, GPIO.HIGH)
+        # GPIO.output(self._CS, GPIO.HIGH)
+        CS_pin.value = True
 
     def _write_data(self, data: np.array):
         """
