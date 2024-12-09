@@ -1,6 +1,7 @@
 #!/usr/bin/python
 """
 2024/07/14  日時と気温、湿度、気圧の表示を行う
+2024/12/09  ePaperを書いた後i2cがおかしくなるので、i2cをリセットするとした
 
 """
 import ep_lib
@@ -8,6 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 import datetime
 import time
+import os
 
 def main():
 
@@ -39,7 +41,9 @@ def main():
     ep_lib.clear_w()
     # ep_lib.clear_b()
     # ep_lib.clear_w()
-
+    
+    # ePaperをクローズ
+    # ep_lib.close()
 
     while True:
 
@@ -101,6 +105,10 @@ def main():
 
         # 描画用のオブジェクトをクリアする（白で塗りつぶす）
         draw.rectangle([0, 0, image_width, image_height], fill=1)
+
+        # ePaperを書いた後i2cがおかしくなるので、i2cをリセットする
+        os.system("sudo rmmod i2c_bcm2835")
+        os.system("sudo modprobe i2c_bcm2835")
 
         # 正分になるのを待つ
         dt_now = datetime.datetime.now()

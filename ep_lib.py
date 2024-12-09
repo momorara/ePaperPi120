@@ -15,6 +15,8 @@ ePaper のためのライブラリです。
 関数の名前も短くする。
 mainから呼ぶときは text() だけで呼べるが、
 importしたときは ep_lib.text() とする
+
+2024/12/09  ePaperを書いた後i2cがおかしくなるので、i2cをリセットするとした
 """
 
 import raspberrypi_epd
@@ -24,6 +26,7 @@ from bdfparser import Font
 import time
 from PIL import Image
 import random
+import os
 
 # Ejemplo de conexion
 # BUSY          GPIO4
@@ -68,6 +71,11 @@ def write_buffer():
 # これをしないで、再起動するとワーニングが出る。
 def close():
     display.close()
+    GPIO.cleanup()
+    # ePaperを書いた後i2cがおかしくなるので、i2cをリセットする
+    os.system("sudo rmmod i2c_bcm2835")
+    os.system("sudo modprobe i2c_bcm2835")
+
 
 # ビットマップフォントを設定する
 def set_font(n):
