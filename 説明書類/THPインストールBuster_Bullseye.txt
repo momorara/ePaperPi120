@@ -1,6 +1,7 @@
 
 2024/7/13
 bullseye 11.9
+2024/12/30 11.11
 
 インストール(以下のライブラリをインストールしてください。)
 sudo apt update
@@ -9,6 +10,13 @@ sudo apt upgrade
 
 >>i2cデバイスとして認識されているか確認
 i2cdetect -y 1
+
+I2cがおかしくなっている場合は
+$ sudo rmmod i2c_bcm2835
+$ sudo modprobe i2c_bcm2835
+としてリセットすれば治る
+* ePpaerを表示するとi2cがおかしくなるので都度リセットする
+
 
 >>BMP280ライブラリのインストール(2023/9以降)
 sudo pip3 install bmp280
@@ -25,7 +33,7 @@ Press Ctrl+C to exit!
 >>AHT10,AHT20,AHT30ライブラリのインストール
 cd
 pip3 install adafruit-circuitpython-ahtx0
-cd tft_THP
+cd ePaperPi
 python3 AHTx0_dataSave03.py
 として、温度と湿度が表示されればＯＫ
 (例)
