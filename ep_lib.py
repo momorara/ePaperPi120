@@ -17,20 +17,16 @@ mainから呼ぶときは text() だけで呼べるが、
 importしたときは ep_lib.text() とする
 
 2024/12/09  ePaperを書いた後i2cがおかしくなるので、i2cをリセットするとした
-2024/01/03  gpiozeroで動作するようにしたい
 """
 
 import raspberrypi_epd
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import numpy as np
 from bdfparser import Font
 import time
 from PIL import Image
 import random
 import os
-
-from gpiozero import LED
-from gpiozero import Button
 
 # Ejemplo de conexion
 # BUSY          GPIO4
@@ -42,13 +38,8 @@ from gpiozero import Button
 # GND
 # VCC
 
-busy_gpio  = Button(4,pull_up=False)
-reset_gpio = LED(17)
-dc_gpio    = LED(27)
-cs_gpio    = LED(22)
-
-# GPIO.setmode(GPIO.BCM)
-# busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
+GPIO.setmode(GPIO.BCM)
+busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
 display = raspberrypi_epd.WeAct213(busy=busy_gpio, reset=reset_gpio, dc=dc_gpio, cs=cs_gpio)
 display.init()
 
@@ -79,12 +70,11 @@ def write_buffer():
 # ePaperライブラリを終了
 # これをしないで、再起動するとワーニングが出る。
 def close():
+    display.close()
+    GPIO.cleanup()
+    # ePaperを書いた後i2cがおかしくなるので、i2cをリセットする
     os.system("sudo rmmod i2c_bcm2835")
     os.system("sudo modprobe i2c_bcm2835")
-    display.close()
-    # GPIO.cleanup()
-    # ePaperを書いた後i2cがおかしくなるので、i2cをリセットする
-
 
 
 # ビットマップフォントを設定する
@@ -279,9 +269,9 @@ def main():
     time.sleep(2)
     # clear_w()
 
-    # image_path = 'bmp/zero_250x128.bmp'
-    # bmp(x,y,image_path,BorW,1)
-    # time.sleep(2)
+    image_path = 'bmp/zero_250x128.bmp'
+    bmp(x,y,image_path,BorW,1)
+    time.sleep(2)
     clear_buffer()
 
     image_path = 'bmp/1bpp41.bmp'
