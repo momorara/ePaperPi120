@@ -1,59 +1,27 @@
 """
-2.9インチ用に改造
-Bookwormで使用できるようにdigitalioを使用
+2025/01/10  RPi.GPIOを使わないgpiozero方式とした
 """
-
 import numpy as np
 import raspberrypi_epd.commands as cmd
 import logging
 import time
 import spidev
-# import RPi.GPIO as GPIO
+from gpiozero import OutputDevice, InputDevice
 from enum import Enum
 from raspberrypi_epd.buffer import DisplayBuffer
 from bdfparser import Font
-
-import digitalio
-import board
 
 class Color(Enum):
     BLACK = 0
     WHITE = 1
     RED = 2
 
-
 BLACK = np.uint8(0x00)
 WHITE = np.uint8(0xFF)
 RED = np.uint8(0xFF)
 
-# GPIO.setup(self._RESET, GPIO.OUT)
-# GPIO.output(self._RESET, GPIO.HIGH)
-reset_pin = digitalio.DigitalInOut(board.D17)  # reset 
-reset_pin.direction = digitalio.Direction.OUTPUT
-reset_pin.value = True  # Turn on the reset
-
-# GPIO.setup(self._DC, GPIO.OUT)
-DC_pin = digitalio.DigitalInOut(board.D27)  # DC
-DC_pin.direction = digitalio.Direction.OUTPUT
-
-# GPIO.setup(self._CS, GPIO.OUT)
-CS_pin = digitalio.DigitalInOut(board.D2)  # CS
-CS_pin.direction = digitalio.Direction.OUTPUT
-
-# GPIO.setup(self.BUSY, GPIO.IN)
-busy_pin = digitalio.DigitalInOut(board.D4)  # busy
-busy_pin.direction = digitalio.Direction.INPUT
-
 class WeAct213:
-    """
-    Provides the low level control/writing operations on the display
-    """
-    # 2.13インチ
-    # HEIGHT = 250
-    # WIDTH = 128
-    # WIDTH_VISIBLE = 122
-    # 2.9インチ
-    HEIGHT = 300
+    HEIGHT = 296
     WIDTH = 128
     WIDTH_VISIBLE = 128
     CONTROLLER = "SSD1680"
@@ -74,30 +42,15 @@ class WeAct213:
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00], dtype=np.uint8)
 
-
-
     def __init__(self, dc: int, cs: int, busy: int, reset: int):
-        """
-        Class constructor. Pin Numbering should be set outside this class (see GPIO.setmode)
-        :param dc: Data/Command pin number
-        :param cs: Chip Select pin number
-        :param busy: BUSY pin number
-        :param reset: RESET pin number
-        """
-        # busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
-        self._DC = dc
-        self._CS = cs
-        self._RESET = reset
-        self._BUSY = busy
-        # GPIO.setup(self._DC, GPIO.OUT)
-        # GPIO.setup(self._CS, GPIO.OUT)
-
-        # GPIO.setup(self._RESET, GPIO.OUT)
-        # GPIO.output(self._RESET, GPIO.HIGH)
-
-        # GPIO.setup(self.BUSY, GPIO.IN)
+        self._DC = OutputDevice(dc)
+        self._CS = OutputDevice(cs)
+        self._RESET = OutputDevice(reset)
+        self._BUSY = InputDevice(busy)
+        self._RESET.on()
         self._spi = spidev.SpiDev()
         self._spi.open(bus=0, device=0)
         self._spi.max_speed_hz = 500000  # 500KHz
@@ -112,10 +65,6 @@ class WeAct213:
         self._rotation = 0
 
     def init(self):
-        """
-        Do the initial configuration of the display
-        :return: None
-        """
         logging.debug("Initializing display")
         self.reset()
         self._startup()
@@ -123,11 +72,6 @@ class WeAct213:
         self._using_partial_mode = False
 
     def _power_on(self):
-        """
-        Execute commands to wake up the display
-        :return: None
-        """
-        # Power on
         if not self.powered:
             self._write_command(cmd.DISPLAY_UPDATE_CONTROL_2)
             self._write_data_byte(np.uint8(0xF8))
@@ -137,10 +81,6 @@ class WeAct213:
         logging.debug("Power on complete")
 
     def _power_off(self):
-        """
-        Sends the commands to poweroff the display
-        :return: None
-        """
         if self.powered:
             self._write_command(cmd.DISPLAY_UPDATE_CONTROL_2)
             self._write_data_byte(np.uint8(0x83))
@@ -150,108 +90,58 @@ class WeAct213:
         self._using_partial_mode = False
 
     def init_partial(self):
-        """
-        Configures the display to initialize the partial update mode
-
-        CURRENTLY DOES NOT WORK
-        :return: None
-        """
         logging.debug("Initializing partial update mode")
         self._startup()
-        # self._set_partial_area(0, 0, self.WIDTH, self.HEIGHT)
         self._write_command(cmd.WRITE_LUT_REG)
         self._write_data(self.LUT_PARTIAL)
         self._power_on()
         self._using_partial_mode = True
 
     def reset(self):
-        """
-        Hard resets and then Soft reset the display
-        """
         logging.debug("Reseting the display")
-        # Do a HW Reset
-        # GPIO.output(self._RESET, GPIO.LOW)
-        reset_pin.value = False
+        self._RESET.off()
         time.sleep(0.01)
-        # GPIO.output(self._RESET, GPIO.HIGH)
-        reset_pin.value = True
-        # SW Reset (command 0x12)
+        self._RESET.on()
         self._write_command(cmd.SW_RESET)
         self._wait_while_busy()
-        # Wait 10ms
         time.sleep(0.01)
-        #   Wait BUSY low
         self._wait_while_busy()
         logging.debug("Display was reset")
 
     def close(self):
-        """
-        Frees up the resources used by this class. Must be called once this class is no longer needed
-        :return:
-        """
         self._spi.close()
-        # GPIO.cleanup()
 
     def _wait_while_busy(self):
-        """
-        Blocks and waits for the display to be able to receibe commands
-        :return: None
-        """
         counter = 0
-        while True:
-            busy = busy_pin.value
-            if busy == False:
-                break
+        while self._BUSY.is_active:
             time.sleep(0.005)
-            counter = counter + 1
+            counter += 1
         logging.debug(f"Display was busy for {counter*5} ms")
 
     def _startup(self):
-        """
-        Initial configuration commands sequence
-        :return: None
-        """
-        # Send init code
-        #   Set gate driver output (0x01)
         self._write_command(cmd.DRIVER_OUTPUT_CONTROL)
         self._write_data_byte(np.uint8(0x27))
         self._write_data_byte(np.uint8([0x01]))
         self._write_data_byte(np.uint8([0x00]))
-        #   Set display RAM size (0x11, 0x44, 0x45)
         self._write_command(cmd.DATA_ENTRY_MODE)
         self._write_data_byte(np.uint8([0x03]))
-        #   Set panel border (0x3C)
         self._write_command(cmd.BORDER_WAVEFORM_CONTROL)
         self._write_data_byte(np.uint8(0x05))
-        #   Sense temp (0x18)
         self._write_command(cmd.TEMP_SENSOR_CONTROL)
         self._write_data_byte(np.uint8(0x80))
-        #   Load waveform LUT (0x22, 0x20)
-        # Display update control
         self._write_command(cmd.DISPLAY_UPDATE_CONTROL)
         self._write_data_byte(np.uint8(0x00))
         self._write_data_byte(np.uint8(0x80))
         self._partial_area = (0, 0, self.WIDTH, self.HEIGHT)
 
     def _set_partial_area(self, x, y, width, height):
-        """
-        Sets a partial area of the display to update only that
-        :param x: X Coordinate of the upper left corner
-        :param y: Y Coordinate of the upper left corner
-        :param width: Area width
-        :param height: Area height
-        :return: None
-        """
-        # Set how the addr counter increases: X increase (until WIDTH) then Y increase
         self._write_command(cmd.DATA_ENTRY_MODE)
         self._write_data_byte(np.uint8(0x03))
-        # Specify the start/end positions of the window address in the X direction by 8 times address unit
         self._write_command(cmd.SET_RAM_X_STARTEND)
         start_x_address = np.uint8(x / 8)
         end_x_address = np.uint8((x + width - 1) / 8)
         self._write_data_byte(start_x_address)
         self._write_data_byte(end_x_address)
-        # Specify the start / end positions of the window address in the Y direction by an address unit.
         self._write_command(cmd.SET_RAM_Y_STARTEND)
         start_y_mod = np.uint8(y % 256)
         start_y_mult = np.uint8(y / 256)
@@ -261,53 +151,86 @@ class WeAct213:
         end_y_mult = np.uint8((y + height - 1) / 256)
         self._write_data_byte(end_y_mod)
         self._write_data_byte(end_y_mult)
-        # X RAM Offset
-        self._write_command(cmd.SET_RAM_X_ADDR_COUNTER)
-        self._write_data_byte(start_x_address)
-        # Y RAM Offset
-        self._write_command(cmd.SET_RAM_Y_ADDR_COUNTER)
-        self._write_data_byte(start_y_mod)
-        self._write_data_byte(start_y_mult)
 
-    def _write_command(self, command: np.uint8):
-        """
-        Writes a command through the SPI interface to the display with its control lines
-        :param command: The command (byte) to write
-        :return: None
-        """
-        logging.debug(f"Sending command: 0x{command.tobytes().hex()}")
-        # GPIO.output(self._DC, GPIO.LOW)
-        DC_pin.value = False
-        # GPIO.output(self._CS, GPIO.LOW)
-        CS_pin.value = False
-        self._spi.xfer2(command.tobytes())
-        # GPIO.output(self._CS, GPIO.HIGH)
-        CS_pin.value = True
-        # GPIO.output(self._DC, GPIO.HIGH)
-        DC_pin.value = True
+    def _write_command(self, command):
+        self._DC.off()
+        # self._spi.xfer([command])
+        self._spi.xfer([int(command)])
 
+    # def _write_data_byte(self, data):
+    #     self._DC.on()
+    #     # self._spi.xfer([data])
+    #     self._spi.xfer([int(data)])
 
-    def _write_data_byte(self, data: np.uint8):
-        """
-        Writes a single byte of data to the SPI bus
-        :param data: The data byte
-        :return: None
-        """
-        # logging.debug(f'Sending data byte: 0x{data.tobytes().hex()}')
-        # GPIO.output(self._CS, GPIO.LOW)
-        CS_pin.value = False
-        self._spi.xfer2(data.tobytes())
-        # GPIO.output(self._CS, GPIO.HIGH)
-        CS_pin.value = True
+    # def _write_data_byte(self, data):
+    #     self._DC.on()
+    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
+    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
+    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
+    #         self._spi.xfer(chunk)
 
-    def _write_data(self, data: np.array):
-        """
-        Write multiple data bytes in a sequence to the display
-        :param data: A sequence of data bytes
-        :return: None
-        """
-        for byte in data:
-            self._write_data_byte(byte)
+    def _write_data_byte(self, data):
+        self._DC.on()
+        MAX_TRANSFER_SIZE = 4096  # spidevの制限
+        # データがnumpy配列の場合はリストに変換
+        if isinstance(data, np.ndarray):
+            data = data.tolist()
+        # データが単一の値の場合はリストに変換
+        if isinstance(data, (np.uint8, int)):
+            data = [int(data)]
+        # データを分割して送信
+        for i in range(0, len(data), MAX_TRANSFER_SIZE):
+            chunk = data[i:i + MAX_TRANSFER_SIZE]
+            self._spi.xfer(chunk)
+
+    # def _write_data(self, data):
+    #     self._DC.on()
+    #     self._spi.xfer(data)
+    
+    # def _write_data(self, data):
+    #     self._DC.on()
+    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
+    #     # データを4096バイトごとに分割して送信
+    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
+    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
+    #         self._spi.xfer(chunk)
+
+    # def _write_data(self, data):
+    #     self._DC.on()
+    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
+    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
+    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
+    #         # chunkをリスト形式に変換
+    #         if isinstance(chunk, (bytes, bytearray)):
+    #             chunk = list(chunk)
+    #         self._spi.xfer(chunk)
+
+    # def _write_data(self, data):
+    #     self._DC.on()
+    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
+    #     # データがbytesまたはbytearrayの場合はリスト形式に変換
+    #     if isinstance(data, (bytes, bytearray)):
+    #         data = list(data)
+    #     # データを分割して送信
+    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
+    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
+    #         # chunkがリスト形式であることを保証
+    #         if isinstance(chunk, (bytes, bytearray)):
+    #             chunk = list(chunk)
+    #         self._spi.xfer(chunk)
+
+    def _write_data(self, data):
+        self._DC.on()
+        MAX_TRANSFER_SIZE = 4096  # spidevの制限
+        # データをリスト形式に変換
+        if isinstance(data, (bytes, bytearray)):
+            data = list(data)
+        elif isinstance(data, np.ndarray):  # numpy配列の場合
+            data = data.tolist()
+        # データを分割して送信
+        for i in range(0, len(data), MAX_TRANSFER_SIZE):
+            chunk = data[i:i + MAX_TRANSFER_SIZE]
+            self._spi.xfer(chunk)  # spidev.xferにリストを渡す
 
     def _update_full(self):
         """
@@ -360,11 +283,14 @@ class WeAct213:
         self._bw_buffer.rotate(degrees)
         self._red_buffer.rotate(degrees)
 
+
+
     def write_buffer(self):
         """
         Writes the complete buffers (B&W and Red) to the display
         :return: None
         """
+        
         self._set_partial_area(0, 0, self.WIDTH, self.HEIGHT)
         # After this command, data entries will be written into the BW RAM until another command is written.
         self._write_command(cmd.WRITE_RAM_BW)
