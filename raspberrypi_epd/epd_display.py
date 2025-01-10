@@ -157,18 +157,6 @@ class WeAct213:
         # self._spi.xfer([command])
         self._spi.xfer([int(command)])
 
-    # def _write_data_byte(self, data):
-    #     self._DC.on()
-    #     # self._spi.xfer([data])
-    #     self._spi.xfer([int(data)])
-
-    # def _write_data_byte(self, data):
-    #     self._DC.on()
-    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
-    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
-    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
-    #         self._spi.xfer(chunk)
-
     def _write_data_byte(self, data):
         self._DC.on()
         MAX_TRANSFER_SIZE = 4096  # spidevの制限
@@ -182,42 +170,6 @@ class WeAct213:
         for i in range(0, len(data), MAX_TRANSFER_SIZE):
             chunk = data[i:i + MAX_TRANSFER_SIZE]
             self._spi.xfer(chunk)
-
-    # def _write_data(self, data):
-    #     self._DC.on()
-    #     self._spi.xfer(data)
-    
-    # def _write_data(self, data):
-    #     self._DC.on()
-    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
-    #     # データを4096バイトごとに分割して送信
-    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
-    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
-    #         self._spi.xfer(chunk)
-
-    # def _write_data(self, data):
-    #     self._DC.on()
-    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
-    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
-    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
-    #         # chunkをリスト形式に変換
-    #         if isinstance(chunk, (bytes, bytearray)):
-    #             chunk = list(chunk)
-    #         self._spi.xfer(chunk)
-
-    # def _write_data(self, data):
-    #     self._DC.on()
-    #     MAX_TRANSFER_SIZE = 4096  # spidevの制限
-    #     # データがbytesまたはbytearrayの場合はリスト形式に変換
-    #     if isinstance(data, (bytes, bytearray)):
-    #         data = list(data)
-    #     # データを分割して送信
-    #     for i in range(0, len(data), MAX_TRANSFER_SIZE):
-    #         chunk = data[i:i + MAX_TRANSFER_SIZE]
-    #         # chunkがリスト形式であることを保証
-    #         if isinstance(chunk, (bytes, bytearray)):
-    #             chunk = list(chunk)
-    #         self._spi.xfer(chunk)
 
     def _write_data(self, data):
         self._DC.on()
@@ -283,14 +235,11 @@ class WeAct213:
         self._bw_buffer.rotate(degrees)
         self._red_buffer.rotate(degrees)
 
-
-
     def write_buffer(self):
         """
         Writes the complete buffers (B&W and Red) to the display
         :return: None
         """
-        
         self._set_partial_area(0, 0, self.WIDTH, self.HEIGHT)
         # After this command, data entries will be written into the BW RAM until another command is written.
         self._write_command(cmd.WRITE_RAM_BW)
