@@ -17,16 +17,19 @@ mainから呼ぶときは text() だけで呼べるが、
 importしたときは ep_lib.text() とする
 
 2024/12/09  ePaperを書いた後i2cがおかしくなるので、i2cをリセットするとした
+2025/01/10  RPi.GPIOを使わない方式とした
+            ドライバーの都合なのか物理的には 128*296 のはずだが、128*293 の表示領域となります。
 """
 
 import raspberrypi_epd
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import numpy as np
 from bdfparser import Font
 import time
 from PIL import Image
 import random
 import os
+import time
 
 # Ejemplo de conexion
 # BUSY          GPIO4
@@ -38,13 +41,14 @@ import os
 # GND
 # VCC
 
-GPIO.setmode(GPIO.BCM)
+# GPIO.setmode(GPIO.BCM)
 busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
 display = raspberrypi_epd.WeAct213(busy=busy_gpio, reset=reset_gpio, dc=dc_gpio, cs=cs_gpio)
 display.init()
 
 # 画面を白くクリアする
 def clear_w():
+    display.init()
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.WHITE)
     display.refresh(False)
@@ -52,6 +56,7 @@ def clear_w():
 
 # 画面を黒くクリアする
 def clear_b():
+    display.init()
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.BLACK)
     display.refresh(False)
@@ -59,6 +64,7 @@ def clear_b():
 
 # バッファの内容をクリア
 def clear_buffer():
+    display.init()
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.WHITE)
     # display.refresh(False)
@@ -71,7 +77,7 @@ def write_buffer():
 # これをしないで、再起動するとワーニングが出る。
 def close():
     display.close()
-    GPIO.cleanup()
+    # GPIO.cleanup()
     # ePaperを書いた後i2cがおかしくなるので、i2cをリセットする
     os.system("sudo rmmod i2c_bcm2835")
     os.system("sudo modprobe i2c_bcm2835")
@@ -88,43 +94,47 @@ def set_font(n):
 # 文字を書く
 def text(text,x,y,set):
     # 長い文字列を表示する場合、表示域をはみ出すとエラーになります。
-    display.draw_text(text, x+4, y, raspberrypi_epd.Color.BLACK)
+    display.draw_text(text, x+3, y, raspberrypi_epd.Color.BLACK)
     if set == 1:
         display.write_buffer() # ePaperに表示
 
 # 点を書く
 def pixel(x,y,color,set):
     if color == 'B':
-        display.draw_pixel( x+4, y, raspberrypi_epd.Color.BLACK)
+        display.draw_pixel( x+3, y, raspberrypi_epd.Color.BLACK)
     if color == 'W':
-        display.draw_pixel( x+4, y, raspberrypi_epd.Color.WHITE)
+        display.draw_pixel( x+3, y, raspberrypi_epd.Color.WHITE)
     if set == 1:
+        display.init()
         display.write_buffer() # ePaperに表示
 
 # 線を書きます。
 def line(x1,y1,x2,y2,color,set):
     if color == 'B':
-        display.draw_line( x1+4,y1,x2+4,y2, raspberrypi_epd.Color.BLACK)
+        display.draw_line( x1+3,y1,x2+3,y2, raspberrypi_epd.Color.BLACK)
     if color == 'W':
-        display.draw_line( x1+4,y1,x2+4,y2, raspberrypi_epd.Color.WHITE)
+        display.draw_line( x1+3,y1,x2+3,y2, raspberrypi_epd.Color.WHITE)
     if set == 1:
         display.write_buffer() # ePaperに表示
 
 # 円を書きます。
 def circle(x,y,r,color,set):
     if color == 'B':
-        display.draw_circle( x+4, y, r,raspberrypi_epd.Color.BLACK)
+        display.draw_circle( x+3, y, r,raspberrypi_epd.Color.BLACK)
     if color == 'W':
-        display.draw_circle( x+4, y, r,raspberrypi_epd.Color.WHITE)
+        display.draw_circle( x+3, y, r,raspberrypi_epd.Color.WHITE)
     if set == 1:
         display.write_buffer() # ePaperに表示
 
 # 四角を書きます。
-def rectangle(x,y,width,heigth,color,set):
+def rectangle(x1,y1,x2,y2,color,set):
+    # 四角のみx2,y2はx1,y1からの増分なので、変換する
+    xw = x2 - x1
+    yw = y2 - y1
     if color == 'B':
-        display.draw_rectangle( x+4,y,width,heigth, raspberrypi_epd.Color.BLACK)
+        display.draw_rectangle( x1+3,y1,xw,yw, raspberrypi_epd.Color.BLACK)
     if color == 'W':
-        display.draw_rectangle( x+4,y,width,heigth, raspberrypi_epd.Color.WHITE)
+        display.draw_rectangle( x1+3,y1,xw,yw, raspberrypi_epd.Color.WHITE)
     if set == 1:
         display.write_buffer() # ePaperに表示
 
@@ -138,7 +148,7 @@ def bmp(x,y,path,BorW,set):
 def bmp_img(x,y,image,BorW,set):
     # x,yの位置にpathの示すビットマップファィルを描画
     # BorW 0:ビットをそのまま　1:ビットを反転して描画
-    # set 0:バッファに書くだけ　0:ePaperに書く
+    # set 0:バッファに書くだけ　1:ePaperに書く
 
     # 画面左上を0,0として、長い方を横:x、短い方を縦:yとする。
     # ビットマップの表示は画像のサイズ、表示位置、ePaperのバッファ領域を考慮して表示する必要がある
@@ -151,7 +161,7 @@ def bmp_img(x,y,image,BorW,set):
     print(f"width: {width}, height: {height}")
     # 読み込んだ画像の大きさ
     HEIGHT = 128
-    WIDTH  = 250
+    WIDTH  = 296
     HEIGHT = height
     WIDTH  = width
 
@@ -171,10 +181,10 @@ def bmp_img(x,y,image,BorW,set):
             y1 = HEIGHT -1 - y
             # print(y,x,y1)
             if image_data[y1, x] == BorW:  # 黒ピクセル
-                display.draw_pixel(y+0-dy, x+4+dx, raspberrypi_epd.Color.BLACK)
+                display.draw_pixel(y+3-dy, x+3+dx, raspberrypi_epd.Color.BLACK)
                 # draw_pixel(x,y,"B",0)
             else:  # 白ピクセル
-                display.draw_pixel(y+0-dy, x+4+dx, raspberrypi_epd.Color.WHITE)
+                display.draw_pixel(y+3-dy, x+3+dx, raspberrypi_epd.Color.WHITE)
                 # draw_pixel(x,y,"W",0)  
     if set == 1:
         display.write_buffer()  # ePaperに表示
@@ -195,64 +205,66 @@ def main():
     text("abcdefghijklmnopqrstuv",0,60,0)
     text("abcdefghijklmnopqrstuvwxz",0,75,0)
     text("ABCDEFGHIJKLMNOPQRSTUVXYZ",0,90,1)
-    set_font(2)
+    set_font(3)
     text("!#$%&'()=~|{`}*+_?><",0,105,1)
 
     clear_w()
 
 
     set_font(3)
-    text("test randam 3000 pixels",0,0,1)
-
+    text("test randam 3000 pixels",0,0,0)
+    rectangle(0,30,292,127,"B",1)
     for i in range(3000):
-        x = random.randint(10, 290)
-        y = random.randint(30, 125)
+        x = random.randint(0, 292)
+        y = random.randint(30, 127)
         pixel(x,y,"B",0)
     write_buffer()
 
+    # line(0,30,292,127,"B",1)
+    time.sleep(5)
+
     clear_w()
 
-    set_font(3)
-    text("test randam 30 lines",0,0,1)
-
+    text("test randam 30 lines",0,0,0)
+    rectangle(0,30,292,127,"B",1)
     for i in range(80):
-        x1 = random.randint(10, 290)
-        y1 = random.randint(30, 125)
-        x2 = random.randint(10, 290)
-        y2 = random.randint(30, 125)
+        x1 = random.randint(0, 292)
+        y1 = random.randint(30, 127)
+        x2 = random.randint(0, 292)
+        y2 = random.randint(30, 127)
         line(x1,y1,x2,y2,"B",0)
     write_buffer()   
 
     clear_w()
 
     set_font(3)
-    text("test randam 30 circles",0,0,1)
-
+    text("test randam 30 circles",0,0,0)
+    rectangle(0,30,292,127,"B",1)
     for i in range(30):
-        x1 = random.randint(30, 290)
-        y1 = random.randint(30, 120)
+        x1 = random.randint(30, 260)
+        y1 = random.randint(60, 97)
         r = random.randint(3, 30)
-        if x1 + r > 290:
-            x1 = x1 - r
-        if y1 + r > 125:
-            y1 = y1 - r
+        # if x1 + r > 260:
+        #     x1 = x1 - r
+        # if y1 + r > 97:
+        #     y1 = y1 - r
         circle(x1,y1,r,"B",0)
     write_buffer()
 
     clear_w()
 
     set_font(3)
-    text("test randam 30 rectangles",0,0,1)
-
+    text("test randam 30 rectangles",0,0,0)
+    rectangle(0,30,292,127,"B",1)
     for i in range(30):
-        x1 = random.randint(30, 290)
+        x1 = random.randint(0, 260)
         y1 = random.randint(30, 120)
-        x2 = random.randint(5, 30)
-        y2 = random.randint(5, 30)
-        if x1 + x2 > 290:
-            x1 = x1 - x2
-        if y1 + y2 > 125:
-            y1 = y1 - y2
+        x2 = x1 + random.randint(5, 30)
+        y2 = y1 + random.randint(5, 30)
+        if x2 > 290:
+            x1 = 290
+        if y2  > 127:
+            y2 = 127
         rectangle(x1,y1,x2,y2,"B",0)
     write_buffer()
 
@@ -267,29 +279,34 @@ def main():
     image_path = 'bmp/checker1.bmp'
     bmp(x,y,image_path,BorW,1)
     time.sleep(2)
-    # clear_w()
+    clear_buffer()
+    clear_w()
 
     image_path = 'bmp/zero_250x128.bmp'
     bmp(x,y,image_path,BorW,1)
     time.sleep(2)
     clear_buffer()
+    clear_w()
 
     image_path = 'bmp/1bpp41.bmp'
     bmp(x,y,image_path,BorW,1)
     time.sleep(2)
-    # clear_w()
+    clear_buffer()
+    clear_w()
 
     image_path = 'bmp/Mountain_250x128wb.bmp'
     BorW = 0
     bmp(x,y,image_path,BorW,1)
     time.sleep(2)
+    clear_buffer()
     BorW = 1
     bmp(x,y,image_path,BorW,1)
     time.sleep(3)
-    # clear_w()
+    clear_buffer()
+    clear_w()
     
     # ePaperをクローズ
-    close()
+    # close()
 
 
 if __name__ == '__main__':
