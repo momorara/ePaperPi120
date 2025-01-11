@@ -17,12 +17,12 @@ def main():
     image_path = 'bmp/checker1.bmp'
     ep_lib.bmp(x,y,image_path,BorW,1)
     time.sleep(2)
-    # ep_lib.clear_w()
+    ep_lib.clear_w()
 
     image_path = 'bmp/1bpp41.bmp'
     ep_lib.bmp(x,y,image_path,BorW,1)
     time.sleep(2)
-    # ep_lib.clear_w()
+    ep_lib.clear_w()
 
     image_path = 'bmp/Mountain_250x128wb.bmp'
     BorW = 0
