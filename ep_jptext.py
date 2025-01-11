@@ -59,8 +59,5 @@ def main():
     draw.text(text_position, japanese_text, font=font, fill=0)  # 0は黒
     ep_lib.bmp_img(x,y,image,BorW,1)
 
-    # ePaperをクローズ
-    ep_lib.close()
-
 if __name__ == '__main__':
     main()

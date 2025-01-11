@@ -17,8 +17,6 @@ def main():
         ep_lib.pixel(x,y,"B",0)
     ep_lib.write_buffer()
     
-    # ePaperをクローズ
-    ep_lib.close()
 
 if __name__ == '__main__':
     main()

@@ -20,8 +20,6 @@ def main():
 
     ep_lib.write_buffer()
     
-    # ePaperをクローズ
-    ep_lib.close()
 
 if __name__ == '__main__':
     main()

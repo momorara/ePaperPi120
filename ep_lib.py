@@ -299,8 +299,6 @@ def main():
     clear_buffer()
     clear_w()
     
-    # ePaperをクローズ
-    # close()
 
 
 if __name__ == '__main__':

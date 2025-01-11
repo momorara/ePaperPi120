@@ -19,8 +19,6 @@ def main():
         ep_lib.line(x1,y1,x2,y2,"B",0)
     ep_lib.write_buffer()
     
-    # ePaperをクローズ
-    ep_lib.close()
 
 if __name__ == '__main__':
     main()

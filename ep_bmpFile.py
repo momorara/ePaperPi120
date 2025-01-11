@@ -38,9 +38,6 @@ def main():
     time.sleep(3)
     # ep_lib.clear_w()
     
-    # ePaperをクローズ
-    ep_lib.close()
-
 if __name__ == '__main__':
     main()
 
