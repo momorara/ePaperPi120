@@ -1,0 +1,62 @@
+
+2025/1/11
+Pi5 bookworm12.8 64bit 動作確認
+
+
+
+aptで入れれるものを先に入れる
+# 日本語TTフォント
+sudo apt-get install fonts-dejavu
+sudo apt-get install fonts-ipafont
+
+
+仮想環境の作り方 今回の仮想環境の名前はV_epとします。
+1. 仮想環境を作る
+python -m venv V_ep --system-site-packages
+
+　　V_epが仮想環境の名前
+
+2.仮想環境の有効化
+　　source V_ep/bin/activate
+   これで仮想環境V_epが有効になり、プロンプトが変わります。
+　　(V_ep) pi@raspberrypi:~/ $
+   こんな感じ
+
+3. 仮想環境から抜け出すのは
+　　deactivate
+
+4.　仮想環境を削除するには以下を実行。
+　　rm -rf V_ep
+
+5. 仮想環境下でのライブラリのインストール
+　　venv環境でのパッケージ管理はpipを使うのが一般的らしい。
+　　仮想環境に入って普通にpipする
+　　 pip install -U foge
+　　-Uとすることで、すでに入っているパッケージのアップデートを行うことができます。
+
+6. 仮想環境下でpythonプログラムの実行
+　　・仮想環境を有効にする
+　　・pythonプログラムのあるディレクトリに移動
+　　・ ../venv/bin/python hoge.py
+
+
+
+インストール手順
+
+まず、プログラムをダウンロード
+git clone https://github.com/momorara/ePaperPi
+
+次に仮想環境を作り仮想環境に入った上で
+sudo apt-get update
+sudo apt-get install python3-pip
+pip install bdfparser
+
+cd ePaperPi
+として、ディレクトリを移動し、
+
+ python ep_lib.py
+などとしてサンプルプログラムが動作することを確認する。
+
+
+
+

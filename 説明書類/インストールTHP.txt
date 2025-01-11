@@ -1,0 +1,54 @@
+
+2025/01/11  Bookwprm 12.8で確認
+
+test_THP.pyで
+AHT30  温度、湿度
+BMP280 気圧
+を使う場合のみ以下が必要です。
+先に仮想環境を作り、
+仮想環境でディレクトリePaper上で以下を行なってください。
+
+
+I2cを有効化
+sudo raspi-config
+にてi2cを有効にしてください。
+
+
+AHT30に必要なライブラリをイントール
+pip install adafruit-circuitpython-ahtx0
+python AHTx0_dataSave03.py
+として、温度と湿度が表示されればＯＫ
+(例)
+測定値Temperature: 25.1 C   Humidity: 31.6 %
+補正値        温度: 0            湿度: 0
+補正後Temperature: 25.1 C   Humidity: 31.0 %
+
+BMP280に必要なライブラリをイントール
+pip install bmp280
+python BMP280_bookworm.py
+として、温度と気圧が表示されればＯＫ
+(例)
+33.51*C 1019.59hPa
+33.49*C 1019.59hPa
+33.48*C 1019.60hPa
+
+
+仮想環境から抜ける
+deactivate
+
+
+
+その他サンプルプログラムを実行も可能
+
+source V_ep/bin/activateとして仮想環境に入り
+
+プログラムのディレクトリへ移動
+cd ePaper
+
+サンプルプログラムを実行
+python3 test_LED.py
+とする
+
+
+
+
