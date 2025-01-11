@@ -1,0 +1,81 @@
+Raspberry PiでePaper（電子ペーパー）ディスプレイモジュールを使用する方法について、
+以下の手順に従ってください。ここでは、Pythonを使った例を示します。
+
+****改造内容
+・オリジナルは2.13インチ用だが、2.9インチ用に改造
+  https://github.com/jairosh/raspberrypi-ssd1680
+・Pi5-bookwormでも使えるようにgpiozeroを使うようにした。
+
+　digitalioのインストールと
+　epd_display.pyのみ改変すれば良かった
+　Pi5の場合は仮想環境でインストールが必要です。
+
+
+ハードウェアの接続
+ePaperディスプレイをRaspberry Piに接続します。接続は以下の通りです。
+WeAct Studio 2.9インチEpaperModuleの場合
+
+ePaper モジュール	Raspberry Pi ピン.          epaperPin
+VCC		3.3V 		(Pin 1)	赤 8
+GND		GND 		(Pin 6)	黒 7
+DIN(SDA)	MOSI-GPIO#10 	(Pin 19)黄 6
+CLK(SCL)	SCLK-GPIO#11	(Pin 23)緑 5
+CS		CE0-GPIO#22 *	(Pin 15)青 4
+DC		GPIO#27 *	(Pin 13)白 3
+RST		GPIO#17 *	(Pin 11)橙 2
+BUSY		GPIO#4  *	(Pin 7)	紫 1
+
+*は変更可能
+*pi専用基板を作ったので、固定
+
+以下はbullseyeでのインストール方法
+
+
+2025/1/11 bullseye11.11で動作
+
+sudo apt-get update
+sudo apt-get install python3-pip
+sudo pip3 install bdfparser
+
+# 日本語TTフォント
+sudo apt-get install fonts-dejavu
+sudo apt-get install fonts-ipafont
+
+
+
+表示について
+
+・画面の初期化
+    display.init()
+    display.fill(raspberrypi_epd.Color.WHITE)
+    display.refresh(False)
+　一旦真っ黒になる
+
+・文字の描画
+　フォントの設定
+	display.set_font('fonts/helvB14.bdf')
+
+	東雲フォントのうちshnmに✖️のついたものは表示可能なよう
+	これにより、フォント種類は増やせる
+	ただし、ついてない容量の大きい(日本語?)は表示できないもよう
+
+　文字をバッファに書く
+	display.draw_text('test by TKJ', 0, 50, raspberrypi_epd.Color.BLACK)
+	この時デフォルトの原点は画面を縦にした時の左上が 0, 0
+	バッファの内容をePaperに描画
+	display.write_buffer()
+　文字の回転
+	文字をバッファに書く前に
+	display.set_rotation(90)
+	とすると、原点が右に90度回転する、以下180度,270度とできる
+	* 回転しない場合は 0から描画
+	* 90度回転して横画面にした時の描画範囲が 0からでなく 3ドット目からとなる	
+
+・四角の描画
+　文字と同様に画面0,0-293,127が表示領域になります。
+　これがハード的なのかドライバの問題かは不明
+　とりあえず
+
+
+
+
