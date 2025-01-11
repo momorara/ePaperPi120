@@ -21,9 +21,7 @@ def main():
     
     ep_lib.set_font(2)
     ep_lib.text("!#$%&'()=~|{`}*+_?><",0,105,1)
-    
-    # ePaperをクローズ
-    ep_lib.close()
+
 
 if __name__ == '__main__':
     main()
