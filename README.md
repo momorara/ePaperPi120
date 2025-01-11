@@ -32,7 +32,7 @@ git clone https://github.com/momorara/ePaperPi <br>
 2024/7/27 Pi5 BookWormでは動作確認できていません。<br>
 2024/12/30 対応OS：Bullseye版(11.11)での動作を確認しました。<br>
 2025/01/11 新プログラムで、対応OS：Bullseye版(11.11)での動作を確認しました。 <br>
-  Pi5 BookWorm動作確認中<br>
+2025/01/11 新プログラムで、Pi5 対応OS：BookWorm版(12.8)での動作を仮想環境にて確認しました。 <br>
   
 <h4><<ライセンス>></h4>
 GNU General Public License v3.0 <br>
