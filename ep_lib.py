@@ -46,6 +46,8 @@ busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
 display = raspberrypi_epd.WeAct213(busy=busy_gpio, reset=reset_gpio, dc=dc_gpio, cs=cs_gpio)
 display.init()
 
+path = '/home/pi/ePaperPi/'  # cronで起動するには絶対パスが必要
+
 # 画面を白くクリアする
 def clear_w():
     display.init()
@@ -85,9 +87,9 @@ def close():
 
 # ビットマップフォントを設定する
 def set_font(n):
-    if n == 1:display.set_font('fonts/spleen-8x16.bdf')
-    if n == 2:display.set_font('fonts/luBS14.bdf')
-    if n == 3:display.set_font('fonts/helvB14.bdf')
+    if n == 1:display.set_font(path + 'fonts/spleen-8x16.bdf')
+    if n == 2:display.set_font(path + 'fonts/luBS14.bdf')
+    if n == 3:display.set_font(path + 'fonts/helvB14.bdf')
     # font-bitmapに矛盾がありwarningが出ますが、表示します。
     # fontの種類により表示位置がずれます。
 
