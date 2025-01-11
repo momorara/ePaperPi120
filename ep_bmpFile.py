@@ -19,11 +19,6 @@ def main():
     time.sleep(2)
     # ep_lib.clear_w()
 
-    image_path = 'bmp/zero_250x128.bmp'
-    ep_lib.bmp(x,y,image_path,BorW,1)
-    time.sleep(2)
-    ep_lib.clear_buffer()
-
     image_path = 'bmp/1bpp41.bmp'
     ep_lib.bmp(x,y,image_path,BorW,1)
     time.sleep(2)
