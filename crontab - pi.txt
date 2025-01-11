@@ -1,11 +1,17 @@
-
-
 # 1分毎に気温、湿度、気圧を測定して記録
 
-# 使っていないセンサーはコメントとしてください。
+# 使っていない行はコメントとしてください。
+
+# bullseye
 * * * * * sleep 30 && python3 /home/pi/ePaperPi/BMP1280_dataSave.py
 * * * * * sleep 45 && python3 /home/pi/ePaperPi/AHTx0_dataSave03.py
-@reboot  sleep 60 && python3 /home/pi/ePaperPi/test_THP.py
+@reboot   sleep 60 && python3 /home/pi/ePaperPi/test_THP.py   1>log.txt 2>errlog.txt
+
+
+# bookworm仮想環境
+#* * * * * sleep 30 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/BMP1280_dataSave.py
+#* * * * * sleep 45 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/AHTx0_dataSave03.py
+#@reboot   sleep 60 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/test_THP.py
 
 
 # logが溜まりすぎると心配なので、定期的に消す
