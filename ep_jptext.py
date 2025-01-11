@@ -10,7 +10,7 @@ def main():
     ep_lib.clear_w()
 
     # ビットマップ画像のサイズ
-    image_width = 290
+    image_width = 292
     image_height = 128
 
     # ゴシック
