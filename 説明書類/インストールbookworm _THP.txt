@@ -35,6 +35,21 @@ python BMP1280_dataSave.py
 補正後Pressure =  1021.08 hPa
 補正後int Pressure =  1021 hPa
 
+上記を行った上で、test_THP.pyを実行すると、日時と気温、湿度、気圧が1分毎に表示されます。
+
+起動時に自動的に起動させるには
+cronに以下の設定を行ってください。
+
+# 1分毎に気温、湿度、気圧を測定して記録
+# bookworm仮想環境
+* * * * * sleep 30 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/BMP1280_dataSave.py
+* * * * * sleep 45 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/AHTx0_dataSave03.py
+@reboot   sleep 60 && /home/pi/V_ep/bin/python /home/pi/ePaperPi/test_THP.py
+# logが溜まりすぎると心配なので、定期的に消す
+# 毎週月曜日21:** リネーム
+30 21 * * 2 mv /home/pi/ePaperPi/temp_data.txt     /home/pi/ePaperPi/temp_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/humdy_data.txt     /home/pi/ePaperPi/humdy_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/press_data.txt     /home/pi/ePaperPi/press_data.bak
 
 
 
