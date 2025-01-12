@@ -2,14 +2,28 @@
 2025/1/11
 Pi5 bookworm12.8 64bit 動作確認
 
-
+インストール手順
 
 aptで入れれるものを先に入れる
 # 日本語TTフォント
 sudo apt-get install fonts-dejavu
 sudo apt-get install fonts-ipafont
 
+まず、プログラムをダウンロード
+git clone https://github.com/momorara/ePaperPi
 
+次に仮想環境を作り仮想環境に入った上で
+sudo apt-get update
+sudo apt-get install python3-pip
+pip install bdfparser
+
+cd ePaperPi
+として、ディレクトリを移動し、
+
+ python ep_lib.py
+などとしてサンプルプログラムが動作することを確認する。
+
+------------------------------------------------------
 仮想環境の作り方 今回の仮想環境の名前はV_epとします。
 1. 仮想環境を作る
 python -m venv V_ep --system-site-packages
@@ -38,25 +52,5 @@ python -m venv V_ep --system-site-packages
 　　・仮想環境を有効にする
 　　・pythonプログラムのあるディレクトリに移動
 　　・ ../venv/bin/python hoge.py
-
-
-
-インストール手順
-
-まず、プログラムをダウンロード
-git clone https://github.com/momorara/ePaperPi
-
-次に仮想環境を作り仮想環境に入った上で
-sudo apt-get update
-sudo apt-get install python3-pip
-pip install bdfparser
-
-cd ePaperPi
-として、ディレクトリを移動し、
-
- python ep_lib.py
-などとしてサンプルプログラムが動作することを確認する。
-
-
 
 
