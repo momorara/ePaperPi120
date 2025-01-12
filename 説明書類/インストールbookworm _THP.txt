@@ -27,29 +27,14 @@ python AHTx0_dataSave03.py
 
 BMP280に必要なライブラリをイントール
 pip install bmp280
-python BMP280_bookworm.py
+python BMP1280_dataSave.py
 として、温度と気圧が表示されればＯＫ
 (例)
-33.51*C 1019.59hPa
-33.49*C 1019.59hPa
-33.48*C 1019.60hPa
+測定値Pressure =  1021.08 hPa
+補正値0
+補正後Pressure =  1021.08 hPa
+補正後int Pressure =  1021 hPa
 
-
-仮想環境から抜ける
-deactivate
-
-
-
-その他サンプルプログラムを実行も可能
-
-source V_ep/bin/activateとして仮想環境に入り
-
-プログラムのディレクトリへ移動
-cd ePaper
-
-サンプルプログラムを実行
-python3 test_LED.py
-とする
 
 
 
