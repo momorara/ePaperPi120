@@ -85,7 +85,17 @@ python BMP280_bookworm.py
 
 Crontabの設定で、test_THP.pyが起動時に立ち上がります。
 
-
+# 1分毎に気温、湿度、気圧を測定して記録
+# 使っていない行はコメントとしてください。
+# bullseye
+* * * * * sleep 30 && python3 /home/pi/ePaperPi/BMP1280_dataSave.py
+* * * * * sleep 45 && python3 /home/pi/ePaperPi/AHTx0_dataSave03.py
+@reboot   sleep 60 && python3 /home/pi/ePaperPi/test_THP.py   1>log.txt 2>errlog.txt
+# logが溜まりすぎると心配なので、定期的に消す
+# 毎週月曜日21:** リネーム
+30 21 * * 2 mv /home/pi/ePaperPi/temp_data.txt     /home/pi/ePaperPi/temp_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/humdy_data.txt     /home/pi/ePaperPi/humdy_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/press_data.txt     /home/pi/ePaperPi/press_data.bak
 ----------------------------------------------------
 
 
