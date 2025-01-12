@@ -47,10 +47,10 @@ sudo apt-get install fonts-ipafont
 
 以上でePaperは使用可能です。
 プログラムのディレクトリへ移動
-cd ePaper
+cd ePaperPi
 
 サンプルプログラムを実行
-python3 test_LED.py
+python3 ep_lib.py
 とする
 
 
@@ -67,7 +67,7 @@ sudo raspi-config
 
 AHT30に必要なライブラリをイントール
 pip install adafruit-circuitpython-ahtx0
-python AHTx0_dataSave03.py
+python3 AHTx0_dataSave03.py
 として、温度と湿度が表示されればＯＫ
 (例)
 測定値Temperature: 25.1 C   Humidity: 31.6 %
@@ -76,7 +76,7 @@ python AHTx0_dataSave03.py
 
 BMP280に必要なライブラリをイントール
 pip install bmp280
-python BMP280_bookworm.py
+python3 BMP1280_dataSave.py
 として、温度と気圧が表示されればＯＫ
 (例)
 33.51*C 1019.59hPa
