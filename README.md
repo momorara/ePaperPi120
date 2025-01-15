@@ -1,5 +1,10 @@
 # ePaperPi
 
+
+font関係をコメントアウトした。
+文字はjptextを使ってください。
+
+
 ePaper のためのライブラリです。
 オリジナルのライブラリはjairoshさんの
 https://github.com/jairosh/raspberrypi-ssd1680/tree/master
