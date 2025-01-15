@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-from bdfparser import Font
+# from bdfparser import Font
 
 
 class DisplayBuffer:
@@ -287,7 +287,7 @@ class DisplayBuffer:
                 y_p = y_p + 1
                 x_p = 0
 
-    def draw_text(self, text: str, font: Font, x: int, y: int, value: np.uint8):
+    #def draw_text(self, text: str, font: Font, x: int, y: int, value: np.uint8):
         """
         Render a bitmap of the text with the provided font and draw it in the buffer
         :param text: The string to render
@@ -297,9 +297,9 @@ class DisplayBuffer:
         :param value: Value to set the pixels in the buffer to
         :return: None
         """
-        text_bitmap = font.draw(text)
-        array, width, height = self._bitmap_to_bytearray(text_bitmap.todata(4))
-        self.draw_bitmap(array, x, y, width, height, value)
+    #    text_bitmap = font.draw(text)
+    #    array, width, height = self._bitmap_to_bytearray(text_bitmap.todata(4))
+    #    self.draw_bitmap(array, x, y, width, height, value)
 
     def draw_rectangle(self, x: int, y: int, w: int, h: int, value: np.uint8):
         """
