@@ -9,7 +9,7 @@ import spidev
 from gpiozero import OutputDevice, InputDevice
 from enum import Enum
 from raspberrypi_epd.buffer import DisplayBuffer
-from bdfparser import Font
+#from bdfparser import Font
 
 class Color(Enum):
     BLACK = 0
@@ -279,13 +279,13 @@ class WeAct213:
         self._set_partial_area(x1, y1, w1, h1)
         self._update_partial()
 
-    def set_font(self, path: str):
+    #def set_font(self, path: str):
         """
         Sets the font to draw text with.
         :param path: The path to a bfd font in the local filesystem
         :return: None
         """
-        self._font = Font(path)
+    #    self._font = Font(path)
 
     def draw_pixel(self, x: int, y: int, color: Color):
         """
@@ -346,7 +346,8 @@ class WeAct213:
             self._red_buffer.draw_bitmap(bitmap, x, y, width, height, np.uint8(0))
         else:
             self._red_buffer.draw_bitmap(bitmap, x, y, width, height, np.uint8(1))
-
+            
+    """
     def draw_text(self, text: str, x: int, y: int, color: Color):
         """
         Draw text in the screen. To use this, a font is needed to be set (see set_font method)
@@ -365,6 +366,7 @@ class WeAct213:
             self._red_buffer.draw_text(text, self._font, x, y, np.uint8(0))
         else:
             self._red_buffer.draw_text(text, self._font, x, y, np.uint8(1))
+    """
 
     def draw_circle(self, x: int, y: int, r: int, color: Color):
         """
