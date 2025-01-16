@@ -3,9 +3,9 @@
 # 使っていない行はコメントとしてください。
 
 # bullseye
-* * * * * sleep 30 && python3 /home/pi/ePaperPi/BMP1280_dataSave.py
-* * * * * sleep 45 && python3 /home/pi/ePaperPi/AHTx0_dataSave03.py
-@reboot   sleep 60 && python3 /home/pi/ePaperPi/test_THP.py   1>log.txt 2>errlog.txt
+* * * * * sleep 55 && python3 /home/pi/ePaperPi/BMP280_dataSave04.py
+* * * * * sleep 50 && python3 /home/pi/ePaperPi/AHTx0_dataSave04.py
+@reboot   sleep 15 && python3 /home/pi/ePaperPi/test_THP.py   1>log.txt 2>errlog.txt
 
 
 # bookworm仮想環境
