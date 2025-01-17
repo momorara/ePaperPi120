@@ -1,5 +1,7 @@
 # ePaperPi
 
+<h4><<使用方法>></h4>
+git clone https://github.com/momorara/test_ep ePaperPi <br>
 
 font関係をコメントアウトした。
 文字はjptextを使ってください。
