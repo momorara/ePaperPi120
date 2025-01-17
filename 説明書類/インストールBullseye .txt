@@ -5,11 +5,7 @@ Raspberry PiでePaper（電子ペーパー）ディスプレイモジュール�
 ・オリジナルは2.13インチ用だが、2.9インチ用に改造
   https://github.com/jairosh/raspberrypi-ssd1680
 ・Pi5-bookwormでも使えるようにgpiozeroを使うようにした。
-
-　digitalioのインストールと
-　epd_display.pyのみ改変すれば良かった
-　Pi5の場合は仮想環境でインストールが必要です。
-
+・pipを使わずインストールできるようにして、bookwormでも仮想環境を使わずに動作可能です。
 
 ハードウェアの接続
 ePaperディスプレイをRaspberry Piに接続します。接続は以下の通りです。
