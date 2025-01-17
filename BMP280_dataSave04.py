@@ -19,11 +19,11 @@ by.kawabata
 # 補正値
 hosei = 0
 
-import lib_path
-path = lib_path.get_path()
-print(path)
+# import lib_path
+# path = lib_path.get_path()
+# print(path)
 # cronの場合は指定が必要
-path = '/home/pi/sensorHAT/'
+path = '/home/pi/ePaperPi/'
 
 
 import datetime

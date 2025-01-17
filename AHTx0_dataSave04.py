@@ -25,11 +25,11 @@ pip install adafruit-circuitpython-ahtx0
 temp_hosei  = 0
 humdy_hosei = 0
 
-import lib_path
-path = lib_path.get_path()
-print(path)
+# import lib_path
+# path = lib_path.get_path()
+# print(path)
 # cronの場合は指定が必要
-path = '/home/pi/sensorHAT/'
+path = '/home/pi/ePaperPi/'
 
 import time
 import datetime
