@@ -205,7 +205,7 @@ def bmp(x,y,path,BorW,set):
 """
 # ビットマップイメージを描画
 def ep_draw(x,y,image,BorW,set):
-    y=y+2
+    y=y+3
     # x,yの位置にpathの示すビットマップファィルを描画
     # BorW 0:ビットをそのまま　1:ビットを反転して描画
     # set 0:バッファに書くだけ　1:ePaperに書く
@@ -283,7 +283,7 @@ def main():
     clear_w(draw)
 
 
-    draw.text((0, 0),"test randam 30 line", font=font_set("gos",24) ,fill=0)
+    draw.text((0, 0),"test randam 80 line", font=font_set("gos",24) ,fill=0)
     draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
     for i in range(80):
         x1 = random.randint(0, 291)
