@@ -310,28 +310,28 @@ def main():
 
     # 既存の画像を開く 白黒画像に限る
     bitmap = Image.open("bmp/checker1.bmp")
-    draw.bitmap((10, 10), bitmap, fill=None)
+    draw.bitmap((0, 0), bitmap, fill=None)
     write_buffer()   
     ep_draw(0,0,image,0,1)
     time.sleep(1)
     clear_w(draw)
 
     bitmap = Image.open("bmp/checker2.bmp")
-    draw.bitmap((10, 10), bitmap, fill=None)
+    draw.bitmap((0, 0), bitmap, fill=None)
     write_buffer()   
     ep_draw(0,0,image,0,1)
     time.sleep(1)
     clear_w(draw)
 
     bitmap = Image.open("bmp/1bpp41.bmp")
-    draw.bitmap((10, 10), bitmap, fill=None)
+    draw.bitmap((0, 0), bitmap, fill=None)
     write_buffer()   
     ep_draw(0,0,image,0,1)
     time.sleep(1)
     clear_w(draw)
 
     bitmap = Image.open("bmp/Mountain_290x128wb.bmp")
-    draw.bitmap((10, 10), bitmap, fill=None)
+    draw.bitmap((0, 0), bitmap, fill=None)
     write_buffer()   
     ep_draw(0,0,image,0,1)
     time.sleep(3)
