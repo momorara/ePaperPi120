@@ -347,8 +347,8 @@ class WeAct213:
         else:
             self._red_buffer.draw_bitmap(bitmap, x, y, width, height, np.uint8(1))
             
-    """
-    def draw_text(self, text: str, x: int, y: int, color: Color):
+
+    #def draw_text(self, text: str, x: int, y: int, color: Color):
         """
         Draw text in the screen. To use this, a font is needed to be set (see set_font method)
         :param text: The string to draw
@@ -356,6 +356,7 @@ class WeAct213:
         :param y: Y Coordinate of the upper left corner of the text
         :param color: Color (enum) of the text
         :return: None
+        """
         """
         if self._font is None:
             logging.warning('Font is not set!')
@@ -366,7 +367,7 @@ class WeAct213:
             self._red_buffer.draw_text(text, self._font, x, y, np.uint8(0))
         else:
             self._red_buffer.draw_text(text, self._font, x, y, np.uint8(1))
-    """
+        """
 
     def draw_circle(self, x: int, y: int, r: int, color: Color):
         """

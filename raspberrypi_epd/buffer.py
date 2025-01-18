@@ -1,3 +1,6 @@
+"""
+2025/01/17  draw_text、bdfparserを使わない　
+"""
 import numpy as np
 import logging
 # from bdfparser import Font
