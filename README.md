@@ -1,12 +1,5 @@
 # ePaperPi
 
-<h4><<使用方法>></h4>
-git clone https://github.com/momorara/test_ep ePaperPi <br>
-
-font関係をコメントアウトした。
-文字はjptextを使ってください。
-
-
 ePaper のためのライブラリです。
 オリジナルのライブラリはjairoshさんの
 https://github.com/jairosh/raspberrypi-ssd1680/tree/master
@@ -40,6 +33,8 @@ git clone https://github.com/momorara/ePaperPi <br>
 2024/12/30 対応OS：Bullseye版(11.11)での動作を確認しました。<br>
 2025/01/11 新プログラムで、対応OS：Bullseye版(11.11)での動作を確認しました。 <br>
 2025/01/11 新プログラムで、Pi5 対応OS：BookWorm版(12.8)での動作を仮想環境にて確認しました。 <br>
+2025/01/19 新プログラムで、Pi5 対応OS：BookWorm版(12.8)での動作を確認しました。 <br>
+仮想環境なしでもインストール、動作可能になりました。
   
 <h4><<ライセンス>></h4>
 GNU General Public License v3.0 <br>
@@ -49,7 +44,7 @@ GNU General Public License v3.0 <br>
 
 <h4><<メンテナンス情報>>></h4>
 2025/01/10 RPi.GPIOを使わないgpiozero方式とした<br>
-ドライバーの都合なのか物理的には 128*296 のはずだが、128*293 の表示領域となります。<br>
+ドライバーの都合なのか物理的には 128*296 のはずだが、128*292 の表示領域となります。<br>
 
 <h4><<サポート窓口>></h4>
   メールアドレスが　tkj-works@mbr.nifty.com に変更になっています。<br>
