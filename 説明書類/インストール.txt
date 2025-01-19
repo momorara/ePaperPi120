@@ -1,0 +1,89 @@
+Raspberry PiでePaper（電子ペーパー）ディスプレイモジュールを使用する方法について、
+以下の手順に従ってください。ここでは、Pythonを使った例を示します。
+
+****改造内容
+・オリジナルは2.13インチ用だが、2.9インチ用に改造
+  https://github.com/jairosh/raspberrypi-ssd1680
+・Pi5-bookwormでも使えるようにgpiozeroを使うようにした。
+
+
+ハードウェアの接続
+ePaperディスプレイをRaspberry Piに接続します。接続は以下の通りです。
+WeAct Studio 2.9インチEpaperModuleの場合
+
+ePaper モジュール	Raspberry Pi ピン.          epaperPin
+VCC		3.3V 		(Pin 1)	赤 8
+GND		GND 		(Pin 6)	黒 7
+DIN(SDA)	MOSI-GPIO#10 	(Pin 19)黄 6
+CLK(SCL)	SCLK-GPIO#11	(Pin 23)緑 5
+CS		CE0-GPIO#22 *	(Pin 15)青 4
+DC		GPIO#27 *	(Pin 13)白 3
+RST		GPIO#17 *	(Pin 11)橙 2
+BUSY		GPIO#4  *	(Pin 7)	紫 1
+
+*は変更可能
+*pi専用基板を作ったので、固定
+
+
+
+インストール方法
+bullseye、bookwormどちらでもインストール方法は同じです。
+
+2025/1/19 bullseye11.11、bookworm12.8で動作確認
+
+まず、プログラムをダウンロード
+git clone https://github.com/momorara/ePaperPi
+
+sudo apt-get update
+sudo apt-get install python3-pip
+
+# 日本語TTフォント
+sudo apt-get install fonts-dejavu
+sudo apt-get install fonts-ipafont
+
+
+
+
+以上でePaperは使用可能です。
+プログラムのディレクトリへ移動
+cd ePaperPi
+
+サンプルプログラムを実行
+python3 ep_lib.py
+とする
+
+
+
+test_THP.pyで
+AHT30  温度、湿度
+BMP280 気圧
+を使う場合のみ以下が必要です。
+
+I2cを有効化
+sudo raspi-config
+にてi2cを有効にしてください。
+
+# smbus2のインストール (Bookwormでは不要)
+ sudo pip3 install smbus2
+
+ターミナルからtest_THP.pyを起動して、動作することを確認の上、
+Crontabの設定で、test_THP.pyが起動時に起動するように設定してください。
+
+
+----------------------------------------------------
+# 1分毎に気温、湿度、気圧を測定して記録
+# 使っていない行はコメントとしてください。
+# bullseye
+* * * * * sleep 30 && python3 /home/pi/ePaperPi/BMP1280_dataSave.py
+* * * * * sleep 45 && python3 /home/pi/ePaperPi/AHTx0_dataSave03.py
+@reboot   sleep 60 && python3 /home/pi/ePaperPi/test_THP.py   1>log.txt 2>errlog.txt
+# logが溜まりすぎると心配なので、定期的に消す
+# 毎週月曜日21:** リネーム
+30 21 * * 2 mv /home/pi/ePaperPi/temp_data.txt     /home/pi/ePaperPi/temp_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/humdy_data.txt     /home/pi/ePaperPi/humdy_data.bak
+30 21 * * 2 mv /home/pi/ePaperPi/press_data.txt     /home/pi/ePaperPi/press_data.bak
+
+
+----------------------------------------------------
+
+
