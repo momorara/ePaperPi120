@@ -4,13 +4,13 @@
 2024/07/15  気圧を60回記録して、上昇か下降かを判別して表示
 2024/07/16  気圧を関数化と修正
 2025/01/11  新ライブラリに対応
+2025/01/18  再度改造した新ライブラリに対応
 """
 import ep_lib
-from PIL import Image, ImageDraw, ImageFont
-
 import datetime
 import time
 import numpy as np
+from PIL import Image
 
 def press_higt_low(pressure_data):
     # 移動平均を計算する（例として5分間隔の移動平均）
@@ -51,25 +51,8 @@ def main():
     # といった表示を行う
 
 
-    # ビットマップ画像のサイズ
-    image_width = 291
-    image_height = 128
-
-    # ゴシック
-    font_path = '/usr/share/fonts/truetype/fonts-japanese-gothic.ttf'
-    # 明朝体
-    # font_path = '/usr/share/fonts/truetype/fonts-japanese-mincho.ttf'
-
-    # 新しい白黒画像を作成（モード1）
-    image = Image.new("1", (image_width, image_height), 1)  # 1は白、0は黒
-
-    # 描画用のオブジェクトを作成
-    draw = ImageDraw.Draw(image)
-
-    print("画面を初期化して、白くする。")
-    ep_lib.clear_w()
-    # ep_lib.clear_b()
-    # ep_lib.clear_w()
+    draw, image = ep_lib.image_set()  # eペーパーディスプレイ用の描画オブジェクトと画像を取得
+    ep_lib.clear_w(draw)  # 画面を白でクリア
 
     press_34 = []
     # press_34 = [
@@ -90,87 +73,69 @@ def main():
         # AHT,BMPの有無を確認して表示内容を変える
         # ない場合は、時計のみとする
 
-        # フォントサイズ
-        font_size = 30
-        # フォントを読み込む
-        font = ImageFont.truetype(font_path, font_size)
-
         mes = now.strftime("%Y年%m月%d日") + "(" + wd_name[wd_no] + ")"
-        print(mes)
-        # テキストを画像に描画
-        text_position = (10, 0)  # テキストの位置（左上の座標）
-        draw.text(text_position, mes, font=font, fill=0)  # 0は黒
+        draw.text((10, 0), mes, font=ep_lib.font_set("gos", 30), fill=0)
 
-        # 11時24分
         mes = now.strftime(" %H時%M分 ")
-        # フォントサイズ
-        font_size = 36
-        # フォントを読み込む
-        font = ImageFont.truetype(font_path, font_size)
-        print(mes)
-        # テキストを画像に描画
-        text_position = (50, 40)  # テキストの位置（左上の座標）
-        draw.text(text_position, mes, font=font, fill=0)  # 0は黒
+        draw.text((50, 40), mes, font=ep_lib.font_set("gos", 30), fill=0)
 
         # 気温、湿度、気圧を読み取り
-        with open(path + 'temp_data_last.txt') as f:
-            temp = f.read()
-            temp = str(int(temp) /10)
-        with open(path + 'humdy_data_last.txt') as f:
-            humdy = f.read()
-        with open(path + 'press_data_last.txt') as f:
-            press = f.read()
+        try:
+            with open(path + 'temp_data_last.txt') as f:
+                temp = f.read()
+                temp = str(int(temp) /10)
+            with open(path + 'humdy_data_last.txt') as f:
+                humdy = f.read()
+            with open(path + 'press_data_last.txt') as f:
+                press = f.read()
+            THP=1 # 計測値あり
+        except:
+            THP=0 # 計測値なし
 
-        # print(temp,humdy,press)
-        mes = "" + temp + "度 " + humdy + "% " + press + "hPa"
-        # フォントサイズ
-        font_size = 28
-        # フォントを読み込む
-        font = ImageFont.truetype(font_path, font_size)
-        print(mes)
-        # テキストを画像に描画
-        text_position = (0, 90)  # テキストの位置（左上の座標）
-        draw.text(text_position, mes, font=font, fill=0)  # 0は黒
+        if THP==1: # 計測値ありの場合のみ表示する
+            mes = "" + temp + "度 " + humdy + "% " + press + "hPa"
+            print(mes)
+            # # テキストを画像に描画
+            draw.text((0, 90), mes, font=ep_lib.font_set("gos", 28), fill=0)
+            ep_lib.write_buffer()
+            ep_lib.ep_draw(0, 0, image, 0, 0)
 
-        x,y = 0,0
-        BorW = 0
-        # 画像イメージをePaperに描画
-        ep_lib.bmp_img(x,y,image,BorW,0)
+            # 気圧が上昇か下降かを判定 ただし、計測開始から30分以上の経過が必要
+            press = int(press)
+            press_34.append(press) # 5分の移動平均を取るのに+5必要
+            high_or_low = 0 # 0:不明　1:high 2:low 3:変わらず
+            if len(press_34) > 34:
+                press_34 = press_34[-34:]  # 一番古いデータを捨てる
+                # 気圧のhigt_lowを判別
+                high_or_low = press_higt_low(press_34)
 
-
-        # 気圧が上昇か下降かを判定 ただし、計測開始から30分以上の経過が必要
-        press = int(press)
-        press_34.append(press) # 5分の移動平均を取るのに+5必要
-        high_or_low = 0 # 0:不明　1:high 2:low 3:変わらず
-        if len(press_34) > 34:
-            press_34 = press_34[-34:]  # 一番古いデータを捨てる
-            # 気圧のhigt_lowを判別
-            high_or_low = press_higt_low(press_34)
-        # print(len(press_34),press_34)
-        print(high_or_low)
-        # 気圧の上昇・下降などを矢印で表示
-        if high_or_low == 0:
-            image_path = path + 'bmp/空白.bmp'
-        if high_or_low == 1:
-            image_path = path + 'bmp/上矢印.bmp'
-        if high_or_low == 2:
-            image_path = path + 'bmp/下矢印.bmp'
-        if high_or_low == 3:
-            image_path = path + 'bmp/横棒.bmp'
-        x,y = 250,90
-        BorW = 0
-        ep_lib.bmp(x,y,image_path,BorW,1)
+            print(high_or_low)
+            # 気圧の上昇・下降などを矢印で表示
+            # high_or_low = 1
+            if high_or_low == 0:
+                image_path = path + 'bmp/空白.bmp'
+            if high_or_low == 1:
+                image_path = path + 'bmp/上矢印.bmp'
+            if high_or_low == 2:
+                image_path = path + 'bmp/下矢印.bmp'
+            if high_or_low == 3:
+                image_path = path + 'bmp/横棒.bmp'
+            bitmap = Image.open(image_path)
+            x,y = 252,90
+            BorW = 0
+            ep_lib.ep_draw(x,y,bitmap,BorW,1)
+            ep_lib.write_buffer()
+        else:
+            ep_lib.ep_draw(0, 0, image, 0, 1)
 
         # 描画用のオブジェクトをクリアする（白で塗りつぶす）
-        draw.rectangle([0, 0, image_width, image_height], fill=1)
+        draw.rectangle([0, 0, 292, 127], fill=1)
 
         # 正分になるのを待つ
         dt_now = datetime.datetime.now()
         while dt_now.second != 0:
-            # print(dt_now.second)
             dt_now = datetime.datetime.now()
             time.sleep(0.01)
-        # print('{0:.2f}'.format(time.time() ))
 
 if __name__ == "__main__":
     main()
