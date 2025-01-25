@@ -280,7 +280,7 @@ def main():
     clear_w(draw)
 
 
-    draw.text((0, 0),"test randam 3000 pixels", font=font_set("gos",24) ,fill=0)
+    draw.text((0, 0),"test random 3000 pixels", font=font_set("gos",24) ,fill=0)
     draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
     for i in range(3000):
         x = random.randint(0, 291)
@@ -292,7 +292,7 @@ def main():
     clear_w(draw)
 
 
-    draw.text((0, 0),"test randam 80 line", font=font_set("gos",24) ,fill=0)
+    draw.text((0, 0),"test random 80 line", font=font_set("gos",24) ,fill=0)
     draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
     for i in range(80):
         x1 = random.randint(0, 291)
@@ -305,7 +305,7 @@ def main():
     time.sleep(1)
     clear_w(draw)
 
-    draw.text((0, 0),"ttest randam 60 circles", font=font_set("gos",24) ,fill=0)
+    draw.text((0, 0),"ttest random 60 circles", font=font_set("gos",24) ,fill=0)
     draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
     for i in range(60):
         x1 = random.randint(5, 270)
