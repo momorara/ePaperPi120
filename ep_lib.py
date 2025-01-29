@@ -275,7 +275,7 @@ def main():
     draw.text((0, 77) ,"0123456789 abcdefghijkl", font=font_set("gos",24) ,fill=0)  # 0は黒
     draw.text((0, 102) ,"!#$%&'()+*<>?/.,", font=font_set("gos",20) ,fill=0)  # 0は黒
     ep_draw(0,0,image,0,1)
-    time.sleep(1)
+    time.sleep(10)
     # image_set()
     clear_w(draw)
 
