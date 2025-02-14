@@ -34,7 +34,8 @@ git clone https://github.com/momorara/ePaperPi <br>
 2025/01/11 新プログラムで、対応OS：Bullseye版(11.11)での動作を確認しました。 <br>
 2025/01/11 新プログラムで、Pi5 対応OS：BookWorm版(12.8)での動作を仮想環境にて確認しました。 <br>
 2025/01/19 新プログラムで、Pi5 対応OS：BookWorm版(12.8)での動作を確認しました。 <br>
-仮想環境なしでもインストール、動作可能になりました。
+仮想環境なしでもインストール、動作可能になりました。<br>
+2025/02/14 新プログラムで、Pi5 対応OS：BookWorm版(12.9)での動作を確認しました。<br>
   
 <h4><<ライセンス>></h4>
 GNU General Public License v3.0 <br>
