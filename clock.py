@@ -109,7 +109,7 @@ def main():
             print(mes)
             # # テキストを画像に描画
             draw.text((0, 90), mes, font=ep_lib.font_set("gos", 28), fill=0)
-            ep_lib.write_buffer()
+            # ep_lib.write_buffer()
             ep_lib.ep_draw(0, 0, image, 0, 0)
 
             # 気圧が上昇か下降かを判定 ただし、計測開始から30分以上の経過が必要
@@ -136,7 +136,7 @@ def main():
             x,y = 252,90
             BorW = 0
             ep_lib.ep_draw(x,y,bitmap,BorW,1)
-            ep_lib.write_buffer()
+            # ep_lib.write_buffer()
         else:
             ep_lib.ep_draw(0, 0, image, 0, 1)
 

@@ -25,7 +25,7 @@ def main():
             draw.rectangle((x1,y1,x2,y2), outline="black", fill="white", width=1)
         else:
             draw.rectangle((x1,y1,x2,y2), outline="white", fill="black", width=1)
-    ep_lib.write_buffer()
+    # ep_lib.write_buffer()
     ep_lib.ep_draw(0,0,image,0,1)
     
     

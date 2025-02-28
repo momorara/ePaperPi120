@@ -87,7 +87,7 @@ def clear_w(draw):
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.WHITE)
     display.refresh(False)
-    display.write_buffer()
+    # display.write_buffer()
 
 # 画面を黒くクリアする
 def clear_b(draw):
@@ -96,7 +96,7 @@ def clear_b(draw):
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.BLACK)
     display.refresh(False)
-    display.write_buffer()
+    # display.write_buffer()
 
 # バッファの内容をクリア
 def clear_buffer():

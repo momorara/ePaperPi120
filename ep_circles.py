@@ -21,7 +21,7 @@ def main():
         else:
             draw.ellipse((x1, y1, x1+r ,y1+r), outline="white", fill="black")
 
-    ep_lib.write_buffer()
+    # ep_lib.write_buffer()
     ep_lib.ep_draw(0,0,image,0,1)
     
 

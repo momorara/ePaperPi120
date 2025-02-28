@@ -62,7 +62,7 @@ def main():
     num_frames = 5  # タイマーの進行を表す内枠の数
     # 外枠と内枠を描画
     draw_frame(draw, x0, y0, width, height, num_frames)
-    ep_lib.write_buffer()
+    # ep_lib.write_buffer()
     ep_lib.ep_draw(0, 0, image, 0, 1)
     # 各内枠の幅を再計算
     d_width = int((width - 4 - 4) / num_frames)
@@ -72,7 +72,7 @@ def main():
     for n in range(num_frames):
         time.sleep(timer * time_multiplier)  # 各枠に対して1秒の遅延をシミュレート
         fill_frame(draw, x0, y0, d_width, height, n)
-        ep_lib.write_buffer()
+        # ep_lib.write_buffer()
         ep_lib.ep_draw(0, 0, image, 0, 1)
 
 
@@ -88,7 +88,7 @@ def main():
     # "Time UP" メッセージ用の白い背景を描画し、その上にテキストを描画
     draw.rectangle((center_x - 10, center_y - 10, center_x + text_width + 10, center_y + text_height + 20), fill="white", outline="black")
     draw.text((center_x, center_y), text, font=font, fill=0)
-    ep_lib.write_buffer()
+    # ep_lib.write_buffer()
     ep_lib.ep_draw(0, 0, image, 0, 1)
 
 if __name__ == '__main__':
