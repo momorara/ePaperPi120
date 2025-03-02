@@ -25,9 +25,13 @@ def main():
     draw.text((0, 77) ,"0123456789 abcdefghijkl", font=ep_lib.font_set("gos",24) ,fill=0)  # 0は黒
     draw.text((0, 102) ,"!#$%&'()+*<>?/.,", font=ep_lib.font_set("gos",20) ,fill=0)  # 0は黒
 
+    # 白地に黒い文字
     ep_lib.ep_draw(0,0,image,0,1)
-    time.sleep(5)
-    ep_lib.clear_w(draw)
+    # time.sleep(1)
+    # ep_lib.clear_w(draw)
+    
+    # 黒地に白い文字
+    # ep_lib.ep_draw(0,0,image,1,1)
 
 if __name__ == '__main__':
     main()
