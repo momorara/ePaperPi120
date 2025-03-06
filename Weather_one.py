@@ -7,6 +7,10 @@
             cronで
             0 * * * * sleep 10 && python3 /home/pi/ePaperPi/Weather_one.py
             などとしてください。
+
+2025/03/06  サンプルとして、APIキーを載せていますが、予告なしに停止する予定です。
+            使用し続けるためにはご自身でAPIキーを取得してください。
+            お住まいの近くのデータはご自身で設定してください。
 """
 
 import requests
