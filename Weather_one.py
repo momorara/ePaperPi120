@@ -11,6 +11,7 @@
 2025/03/06  サンプルとして、APIキーを載せていますが、予告なしに停止する予定です。
             使用し続けるためにはご自身でAPIキーを取得してください。
             お住まいの近くのデータはご自身で設定してください。
+2025/03/09  あるかもしれない天気を追加　雷　霧
 """
 
 import requests
@@ -121,13 +122,14 @@ def weather_check():
 # 単純化した天気を求める
 def weathe_Simplify(weather):
     #晴　雨　曇　雪　雹 に単純化する
-    w_simple_list = ["晴","雨","雲","雪","雹","曇"]
+    w_simple_list = ["晴","雨","雲","雪","雹","曇","雷","霧","no"]
     result = -1
-    for i in range(4):
-        # print(weather)
+    for i in range(len(w_simple_list)):
         result = weather.find(w_simple_list[i])
         if result != -1:
+            result = i
             break
+    # print(result,w_simple_list[result] )
     return w_simple_list[result] 
 
 
