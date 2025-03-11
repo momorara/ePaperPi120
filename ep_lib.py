@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 描画領域はライブラリの関係で以下となる
-0,0,290,127
+0,0,290,119
 ePaper のためのライブラリです。 
 オリジナルのライブラリはjairoshさんの https://github.com/jairosh/raspberrypi-ssd1680/tree/master です。
  こちらは 「WeAct Studio 2.13" three-color e-paper display」用のものですが、 
@@ -30,6 +30,8 @@ importしたときは ep_lib.text() とする
 転送することで、表示することとする。
 なので、文字も図形もImageDraw クラスのメソッドを使うことにする。
 ただし、ePaperの初期化、転送のみ元のライブラリを使うこととなる。
+
+2025/03/05  表示領域(0,8,291,119)に対応
 """
 
 import raspberrypi_epd
@@ -52,6 +54,8 @@ from PIL import Image, ImageDraw, ImageFont
 # GND
 # VCC
 
+disp_8 = 1
+
 # GPIO.setmode(GPIO.BCM)
 busy_gpio, reset_gpio, dc_gpio, cs_gpio = 4,17,27,22
 display = raspberrypi_epd.WeAct213(busy=busy_gpio, reset=reset_gpio, dc=dc_gpio, cs=cs_gpio)
@@ -64,6 +68,8 @@ def image_set():
     # ビットマップ画像のサイズ
     image_width = 292
     image_height = 128
+    if disp_8 == 1:
+        image_height = 120
     # 新しい白黒画像を作成（モード1）
     image = Image.new("1", (image_width, image_height), 1)  # 1は白、0は黒
     # 描画用のオブジェクトを作成
@@ -82,7 +88,7 @@ def font_set(font,font_size):
 
 # 画面を白くクリアする
 def clear_w(draw):
-    draw.rectangle((0, 0, 292, 127), outline="white", fill="white")
+    draw.rectangle((0, 0, 292, 119), outline="white", fill="white")
     display.init()
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.WHITE)
@@ -91,7 +97,7 @@ def clear_w(draw):
 
 # 画面を黒くクリアする
 def clear_b(draw):
-    draw.rectangle((0, 0, 292, 127), outline="black", fill="black")
+    draw.rectangle((0, 0, 292, 119), outline="black", fill="black")
     display.init()
     display.set_rotation(90)
     display.fill(raspberrypi_epd.Color.BLACK)
@@ -214,7 +220,7 @@ def bmp(x,y,path,BorW,set):
 """
 # ビットマップイメージを描画
 def ep_draw(x,y,image,BorW,set):
-    y=y+3
+    y=y+3+6 #6
     # x,yの位置にpathの示すビットマップファィルを描画
     # BorW 0:ビットをそのまま　1:ビットを反転して描画
     # set 0:バッファに書くだけ　1:ePaperに書く
@@ -239,18 +245,17 @@ def ep_draw(x,y,image,BorW,set):
 
     # # ディスプレイバッファを初期化
     # display.fill(raspberrypi_epd.Color.WHITE)
-
     display.set_rotation(0)
     dx = x # 画像描画位置を画面左上を0,0としての位置を変更する
     dy = HEIGHT -128 + y # y軸は左下が0なので変換が必要
     # 画像データをディスプレイバッファに書き込み
     for x in range(WIDTH):
-        for y in range(HEIGHT):
-            
+        for y in range(HEIGHT-0):
+
             # ePaperのデフォルトが縦長な画面のため
             y1 = HEIGHT -1 - y
-            # print(y,x,y1)
-            if image_data[y1, x] == BorW:  # 黒ピクセル
+            # print(y,x,y1,y+3-dy)
+            if image_data[y1, x] == BorW and y1>1:  # 黒ピクセル
                 display.draw_pixel(y+3-dy, x+3+dx, raspberrypi_epd.Color.BLACK)
                 # draw_pixel(x,y,"B",0)
             else:  # 白ピクセル
@@ -281,10 +286,10 @@ def main():
 
 
     draw.text((0, 0),"test random 3000 pixels", font=font_set("gos",24) ,fill=0)
-    draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
+    draw.rectangle((0, 30, 291, 119), outline="black", fill="white")
     for i in range(3000):
         x = random.randint(0, 291)
-        y = random.randint(30, 127)
+        y = random.randint(30, 119)
         draw.point((x, y), fill="black")
     # write_buffer()
     ep_draw(0,0,image,0,1)
@@ -293,20 +298,20 @@ def main():
 
 
     draw.text((0, 0),"test random 80 line", font=font_set("gos",24) ,fill=0)
-    draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
+    draw.rectangle((0, 30, 291, 119), outline="black", fill="white")
     for i in range(80):
         x1 = random.randint(0, 291)
-        y1 = random.randint(30, 127)
+        y1 = random.randint(30, 119)
         x2 = random.randint(0, 291)
-        y2 = random.randint(30, 127)
+        y2 = random.randint(30, 119)
         draw.line((x1,y1,x2,y2), fill="black")
     # write_buffer()   
     ep_draw(0,0,image,0,1)
     time.sleep(1)
     clear_w(draw)
 
-    draw.text((0, 0),"ttest random 60 circles", font=font_set("gos",24) ,fill=0)
-    draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
+    draw.text((0, 0),"test random 60 circles", font=font_set("gos",24) ,fill=0)
+    draw.rectangle((0, 30, 291, 119), outline="black", fill="white")
     for i in range(60):
         x1 = random.randint(5, 270)
         y1 = random.randint(30, 97)
@@ -324,13 +329,6 @@ def main():
     ep_draw(0,0,image,0,1)
     time.sleep(1)
     clear_w(draw)
-
-    # bitmap = Image.open("bmp/checker2.bmp")
-    # draw.bitmap((0, 0), bitmap, fill=None)
-    # # write_buffer()   
-    # ep_draw(0,0,image,0,1)
-    # time.sleep(1)
-    # clear_w(draw)
 
     bitmap = Image.open("bmp/1bpp41.bmp")
     draw.bitmap((0, 0), bitmap, fill=None)

@@ -10,7 +10,7 @@ def main():
     ep_lib.clear_w(draw)
 
     draw.text((0, 0),"test random 80 circles", font=ep_lib.font_set("gos",24) ,fill=0)
-    draw.rectangle((0, 30, 291, 127), outline="black", fill="white")
+    draw.rectangle((0, 30, 291, 119), outline="black", fill="white")
 
     for i in range(80):
         x1 = random.randint(0, 270)
@@ -24,6 +24,8 @@ def main():
     # ep_lib.write_buffer()
     ep_lib.ep_draw(0,0,image,0,1)
     
+    # SPI を終了（リソースを解放）
+    ep_lib.close()
 
 if __name__ == '__main__':
     main()

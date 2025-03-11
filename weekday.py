@@ -25,7 +25,7 @@ def main():
     wd_no = now.weekday()
     formatted_date = f"{int(now.day)}日"
     mes = formatted_date + wd_name[wd_no] + "曜日"
-    draw.text((0, 30), mes, font=ep_lib.font_set("gos", 60), fill=0)
+    draw.text((0, 35), mes, font=ep_lib.font_set("gos", 60), fill=0)
     ep_lib.ep_draw(0,0,image,0,1)
     
     last_date = datetime.datetime.now().date()   # 現在の日付を取得

@@ -141,7 +141,7 @@ def main():
             ep_lib.ep_draw(0, 0, image, 0, 1)
 
         # 描画用のオブジェクトをクリアする（白で塗りつぶす）
-        draw.rectangle([0, 0, 292, 127], fill=1)
+        draw.rectangle([0, 0, 292, 119], fill=1)
 
         # 正分になるのを待つ
         dt_now = datetime.datetime.now()

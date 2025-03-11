@@ -39,7 +39,9 @@ def main():
     ep_lib.ep_draw(0,0,image,0,1)
     # time.sleep(1)
     # ep_lib.clear_w(draw)
-
+    
+    # SPI を終了（リソースを解放）
+    ep_lib.close()
     
 if __name__ == '__main__':
     main()

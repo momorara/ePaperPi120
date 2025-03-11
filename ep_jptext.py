@@ -33,5 +33,8 @@ def main():
     # 黒地に白い文字
     # ep_lib.ep_draw(0,0,image,1,1)
 
+    # SPI を終了（リソースを解放）
+    ep_lib.close()
+
 if __name__ == '__main__':
     main()
