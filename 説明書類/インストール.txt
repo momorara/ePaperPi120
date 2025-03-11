@@ -36,7 +36,7 @@ spiを有効にする
 
 次に
 プログラムをダウンロード
-git clone https://github.com/momorara/ePaperPi
+git clone https://github.com/momorara/ePaperPi120 ePaperPi
 
 Aptを最新にアップデート
 sudo apt-get update
