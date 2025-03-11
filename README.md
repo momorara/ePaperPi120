@@ -1,4 +1,4 @@
-# ePaperPi
+# ePaperPi120
 
 ePaper のためのライブラリです。
 オリジナルのライブラリはjairoshさんの
@@ -17,7 +17,7 @@ https://github.com/jairosh/raspberrypi-ssd1680/tree/master
 ・ラズパイは付属しません。<br>
 
 <h4><<使用方法>></h4>
-git clone https://github.com/momorara/ePaperPi <br>
+git clone https://github.com/momorara/ePaperPi120 ePaper <br>
 でラズパイにダウンロードしてください。<br>
 インストールについては、インストール文書に従いインストールを行ってください。<br>
 説明写真のような使い方ができます。<br>
@@ -45,7 +45,8 @@ GNU General Public License v3.0 <br>
 
 <h4><<メンテナンス情報>>></h4>
 2025/01/10 RPi.GPIOを使わないgpiozero方式とした<br>
-ドライバーの都合なのか物理的には 128*296 のはずだが、128*292 の表示領域となります。<br>
+ドライバーの都合なのか物理的には 128*296 のはずだが、120*292 の表示領域となります。<br>
+
 
 <h4><<サポート窓口>></h4>
   メールアドレスが　tkj-works@mbr.nifty.com に変更になっています。<br>
