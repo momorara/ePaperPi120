@@ -36,6 +36,7 @@ git clone https://github.com/momorara/ePaperPi120 ePaperPi <br>
 仮想環境なしでもインストール、動作可能になりました。<br>
 2025/02/14 新プログラムで、Pi5 対応OS：BookWorm版(12.9)での動作を確認しました。<br>
 2025/02/19 新プログラムで、対応OS：Buster版(10.13)での動作を確認しました。<br>
+2025/04/24 新プログラムで、対応OS：BookWorm版(12.10)での動作を確認しました。<br>
   
 <h4><<ライセンス>></h4>
 GNU General Public License v3.0 <br>
