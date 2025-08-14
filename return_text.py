@@ -19,7 +19,7 @@ def main():
     draw,image = ep_lib.image_set()
     ep_lib.clear_w(draw)
     dy = 0 #6
-    draw.text((0, 0+dy) ,"今回はご支援", font=ep_lib.font_set("gos",24) ,fill=0)  # 0は黒
+    draw.text((0, 0+dy) ,"今回はご購入", font=ep_lib.font_set("gos",24) ,fill=0)  # 0は黒
     draw.text((0, 26+dy) ," ありがとうございました。", font=ep_lib.font_set("gos",24) ,fill=0)  # 0は黒
     draw.text((0, 57+dy) ,"サポートページ", font=ep_lib.font_set("gos",20) ,fill=0)  # 0は黒
     draw.text((0, 80+dy) ,"github.com/momorara/ePaperPi120", font=ep_lib.font_set("gos",16) ,fill=0)  # 0は黒
