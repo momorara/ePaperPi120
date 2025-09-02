@@ -49,6 +49,13 @@ GNU General Public License v3.0 <br>
 2025/01/10 RPi.GPIOを使わないgpiozero方式とした<br>
 ドライバーの都合なのか物理的には 128*296 のはずだが、120*292 の表示領域となります。<br>
 
+<br>
+-------------------------------------------<br>
+基板の販売について、以下のショップにて扱っています。<br>
+BASEショップ<br>
+https://raspi.thebase.in/<br>
+スイッチサイエンス<br>
+https://www.switch-science.com/search?q=tkj<br>
 
 <h4><<サポート窓口>></h4>
   メールアドレスが　tkj-works@mbr.nifty.com に変更になっています。<br>
